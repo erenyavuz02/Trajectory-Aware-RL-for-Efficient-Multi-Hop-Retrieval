@@ -1,0 +1,11 @@
+{
+    "overall_metrics": {
+        "average_ap": 0.0,
+        "average_precision": 0.0,
+        "average_recall": 0.0,
+        "average_f1": 0.0,
+        "total_samples": 0
+    },
+    "per_hop_metrics": [],
+    "detailed_results": []
+}
