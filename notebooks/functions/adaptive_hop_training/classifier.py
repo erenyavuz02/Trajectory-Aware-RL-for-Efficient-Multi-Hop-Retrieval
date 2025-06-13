@@ -1,7 +1,15 @@
 
+import torch
+from torch.utils.data import Dataset, DataLoader
+from transformers import get_linear_schedule_with_warmup
+from torch.optim import AdamW
+from sklearn.metrics import accuracy_score
+from tqdm import tqdm
+from datetime import datetime
+CURRENT_TIMESTAMP = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 class Classifier:
-    def __init__(self, classifier_model, classifier_tokenizer):
+    def __init__(self, classifier_model, classifier_tokenizer, device):
         """
         Initialize the Classifier with a model and tokenizer.
         
@@ -10,6 +18,7 @@ class Classifier:
         """
         self.classifier_model = classifier_model
         self.classifier_tokenizer = classifier_tokenizer
+        self.device = device
         # Training Configuration
         
 
@@ -24,7 +33,7 @@ class Classifier:
             truncation=True,
             padding="max_length",
             max_length=512,
-            return_tensors="pt").to(device)
+            return_tensors="pt").to(self.device)
 
         with torch.no_grad():
             logits = self.classifier_model(**inputs).logits
@@ -270,15 +279,15 @@ class RelevanceDataset(Dataset):
             'labels': torch.tensor(label, dtype=torch.long)
         }
         
-        def get_data_loader(self, batch_size=16, shuffle=True):
-            """Create DataLoader for the dataset"""
-            return DataLoader(
-                self,
-                batch_size=batch_size,
-                shuffle=shuffle,
-            )
+    def get_data_loader(self, batch_size=16, shuffle=True):
+        """Create DataLoader for the dataset"""
+        return DataLoader(
+            self,
+            batch_size=batch_size,
+            shuffle=shuffle,
+        )
 
-        def create_training_data(self, num_samples=1000):
+    def create_training_data(self, num_samples=1000):
         """Create training data from HotpotQA dataset"""
         questions = []
         contexts = []
@@ -294,7 +303,7 @@ class RelevanceDataset(Dataset):
             # Get supporting fact pairs
             supporting_pairs = set(zip(supporting_facts['title'], supporting_facts['sent_id']))
             
-            # Create positive examples (relevant contexts)
+        # Create positive examples (relevant contexts)
             context_titles = context_data['title']
             context_sentences = context_data['sentences']
             
@@ -306,10 +315,9 @@ class RelevanceDataset(Dataset):
                     questions.append(question)
                     contexts.append(sentence)
                     labels.append(1 if is_supporting else 0)
-        
-        print(f"Created {len(questions)} training examples")
-        print(f"Positive examples: {sum(labels)}")
-        print(f"Negative examples: {len(labels) - sum(labels)}")
-        
-        return questions, contexts, labels
-    
+            
+            print(f"Created {len(questions)} training examples")
+            print(f"Positive examples: {sum(labels)}")
+            print(f"Negative examples: {len(labels) - sum(labels)}")
+            
+            return questions, contexts, labels                    
