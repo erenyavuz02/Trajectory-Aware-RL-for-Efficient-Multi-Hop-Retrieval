@@ -1,4 +1,3 @@
-
 import torch
 from torch.utils.data import Dataset, DataLoader
 from transformers import get_linear_schedule_with_warmup
@@ -56,7 +55,7 @@ class Classifier:
 
         # Train the classifier
         print("\nStarting classifier training...")
-        best_accuracy = train_relevance_classifier(
+        best_accuracy = self.train_relevance_classifier(
             train_data=train_data,
             val_data=val_data
         )
@@ -99,12 +98,12 @@ class Classifier:
             
             # Test both contexts
             if relevant_context:
-                result = is_context_relevant(question, relevant_context)
+                result = self.is_context_relevant(question, relevant_context)
                 print(f"Relevant context: {relevant_context[:100]}...")
                 print(f"Classifier prediction: {result}")
             
             if irrelevant_context:
-                result = is_context_relevant(question, irrelevant_context)
+                result = self.is_context_relevant(question, irrelevant_context)
                 print(f"Irrelevant context: {irrelevant_context[:100]}...")
                 print(f"Classifier prediction: {result}")
             
@@ -114,7 +113,7 @@ class Classifier:
         test_question = "Which magazine was started first Arthur's Magazine or First for Women?"
         test_context = "Arthur's Magazine (1844–1846) was an American literary periodical published in Philadelphia in the 19th century."
         
-        result = is_context_relevant(test_question, test_context)
+        result = self.is_context_relevant(test_question, test_context)
         print(f"\nTest example:")
         print(f"Question: {test_question}")
         print(f"Context: {test_context}")
@@ -126,13 +125,15 @@ class Classifier:
         print("Preparing datasets...")
         train_dataset = RelevanceDataset(data = train_data,
             tokenizer = self.classifier_tokenizer,
-            max_length = self.CLASSIFIER_TRAINING_CONFIG['max_length']
+            max_length = self.CLASSIFIER_TRAINING_CONFIG['max_length'],
+            num_samples=self.CLASSIFIER_TRAINING_CONFIG['num_samples']
         )
 
         val_dataset = RelevanceDataset(
             data = val_data,
             tokenizer = self.classifier_tokenizer,
-            max_length = self.CLASSIFIER_TRAINING_CONFIG['max_length']
+            max_length = self.CLASSIFIER_TRAINING_CONFIG['max_length'],
+            num_samples=self.CLASSIFIER_TRAINING_CONFIG['num_samples']  // 10 
         )
 
         train_loader = train_dataset.get_data_loader(
@@ -176,9 +177,9 @@ class Classifier:
             for batch in tqdm(train_loader, desc="Training"):
                 optimizer.zero_grad()
                 
-                input_ids = batch['input_ids'].to(device)
-                attention_mask = batch['attention_mask'].to(device)
-                labels = batch['labels'].to(device)
+                input_ids = batch['input_ids'].to(self.device)
+                attention_mask = batch['attention_mask'].to(self.device)
+                labels = batch['labels'].to(self.device)
 
                 outputs = self.classifier_model(
                     input_ids=input_ids,
@@ -219,9 +220,9 @@ class Classifier:
         
         with torch.no_grad():
             for batch in data_loader:
-                input_ids = batch['input_ids'].to(device)
-                attention_mask = batch['attention_mask'].to(device)
-                labels = batch['labels'].to(device)
+                input_ids = batch['input_ids'].to(self.device)
+                attention_mask = batch['attention_mask'].to(self.device)
+                labels = batch['labels'].to(self.device)
 
                 outputs = self.classifier_model(
                     input_ids=input_ids,
@@ -288,10 +289,13 @@ class RelevanceDataset(Dataset):
         )
 
     def create_training_data(self, num_samples=1000):
-        """Create training data from HotpotQA dataset"""
-        questions = []
-        contexts = []
-        labels = []
+        """Create training data from HotpotQA dataset with balanced positive and negative examples"""
+        import random
+        
+        positive_questions = []
+        positive_contexts = []
+        negative_questions = []
+        negative_contexts = []
         
         print(f"Creating training data from {num_samples} samples...")
 
@@ -303,21 +307,75 @@ class RelevanceDataset(Dataset):
             # Get supporting fact pairs
             supporting_pairs = set(zip(supporting_facts['title'], supporting_facts['sent_id']))
             
-        # Create positive examples (relevant contexts)
+            # Collect all sentences with their labels
             context_titles = context_data['title']
             context_sentences = context_data['sentences']
+            
+            question_positives = []
+            question_negatives = []
             
             for title_idx, (title, sentences) in enumerate(zip(context_titles, context_sentences)):
                 for sent_idx, sentence in enumerate(sentences):
                     # Check if this sentence is a supporting fact
                     is_supporting = (title, sent_idx) in supporting_pairs
                     
-                    questions.append(question)
-                    contexts.append(sentence)
-                    labels.append(1 if is_supporting else 0)
+                    if is_supporting:
+                        question_positives.append(sentence)
+                    else:
+                        question_negatives.append(sentence)
             
-            print(f"Created {len(questions)} training examples")
-            print(f"Positive examples: {sum(labels)}")
-            print(f"Negative examples: {len(labels) - sum(labels)}")
+            # Add all positive examples for this question
+            for pos_sentence in question_positives:
+                positive_questions.append(question)
+                positive_contexts.append(pos_sentence)
             
-            return questions, contexts, labels                    
+            # Limit negative examples per question to avoid overwhelming dataset
+            # Take at most 5 negative examples per question, or all if fewer
+            max_negatives_per_question = 5
+            selected_negatives = random.sample(
+                question_negatives, 
+                min(len(question_negatives), max_negatives_per_question)
+            )
+            
+            for neg_sentence in selected_negatives:
+                negative_questions.append(question)
+                negative_contexts.append(neg_sentence)
+        
+        print(f"Before balancing: {len(positive_questions)} positive, {len(negative_questions)} negative")
+        
+        # Balance the dataset
+        min_examples = min(len(positive_questions), len(negative_questions))
+        
+        if len(positive_questions) < len(negative_questions):
+            # Use all positive examples and sample negatives
+            balanced_positive_questions = positive_questions
+            balanced_positive_contexts = positive_contexts
+            
+            indices = random.sample(range(len(negative_questions)), len(positive_questions))
+            balanced_negative_questions = [negative_questions[i] for i in indices]
+            balanced_negative_contexts = [negative_contexts[i] for i in indices]
+        else:
+            # Use all negative examples and sample positives
+            balanced_negative_questions = negative_questions
+            balanced_negative_contexts = negative_contexts
+            
+            indices = random.sample(range(len(positive_questions)), len(negative_questions))
+            balanced_positive_questions = [positive_questions[i] for i in indices]
+            balanced_positive_contexts = [positive_contexts[i] for i in indices]
+        
+        # Combine balanced examples
+        questions = balanced_positive_questions + balanced_negative_questions
+        contexts = balanced_positive_contexts + balanced_negative_contexts
+        labels = [1] * len(balanced_positive_questions) + [0] * len(balanced_negative_questions)
+        
+        # Shuffle the combined dataset
+        combined = list(zip(questions, contexts, labels))
+        random.shuffle(combined)
+        questions, contexts, labels = zip(*combined)
+        questions, contexts, labels = list(questions), list(contexts), list(labels)
+        
+        print(f"Created {len(questions)} balanced training examples")
+        print(f"Positive examples: {sum(labels)}")
+        print(f"Negative examples: {len(labels) - sum(labels)}")
+        
+        return questions, contexts, labels

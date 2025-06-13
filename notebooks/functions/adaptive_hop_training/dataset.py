@@ -35,22 +35,22 @@ class HotpotDataset:
             train_filename = f"hotpot_train_{self.dataset_config['train_size']}samples_{CURRENT_TIMESTAMP}.jsonl"
             val_filename = f"hotpot_val_{self.dataset_config['val_size']}samples_{CURRENT_TIMESTAMP}.jsonl"
 
-            # Save to JSONL files
-        def save_to_jsonl(data, filename):
-            with open(filename, 'w') as f:
-                for item in data:
-                    f.write(json.dumps(item) + '\n')
+                # Save to JSONL files
+            def save_to_jsonl(data, filename):
+                with open(filename, 'w') as f:
+                    for item in data:
+                        f.write(json.dumps(item) + '\n')
 
-        save_to_jsonl(train_data, train_filename)
-        save_to_jsonl(val_data, val_filename)
+            save_to_jsonl(train_data, train_filename)
+            save_to_jsonl(val_data, val_filename)
 
-        print(f"Dataset created and saved:")
-        print(f"- Training: {train_filename} ({len(train_data['question'])} samples)")
-        print(f"- Validation: {val_filename} ({len(val_data['question'])} samples)")
+            print(f"Dataset created and saved:")
+            print(f"- Training: {train_filename} ({len(train_data['question'])} samples)")
+            print(f"- Validation: {val_filename} ({len(val_data['question'])} samples)")
 
         return train_data, val_data
 
-    def load_existing_dataset(train_filename=None, val_filename=None):
+    def load_existing_dataset(self, train_filename, val_filename):
         """Load dataset from existing JSONL files"""
     
         # Default filenames if not provided

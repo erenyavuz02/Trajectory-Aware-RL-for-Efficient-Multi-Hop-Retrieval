@@ -1,0 +1,407 @@
+[
+  {
+    "id": "5abc00f65542993f40c73c40",
+    "question": "Kim Warwick and Matt Lucena both play what sport?",
+    "answer": "tennis",
+    "type": "comparison",
+    "level": "medium",
+    "relevant_contexts": [
+      {
+        "title": "Kim Warwick",
+        "sentence": "Kim Warwick (born 8 April 1952) is an Australian former professional male tennis player who competed on the ATP Tour from 1970–1987 reaching the final of the singles Australian Open in 1980.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Matt Lucena",
+        "sentence": "Matt Lucena (born August 4, 1969) is a former professional tennis player from the United States.",
+        "sentence_id": 0
+      }
+    ],
+    "irrelevant_contexts": [
+      {
+        "title": "1980 Australian Open – Men's Doubles",
+        "sentence": "The Men's Doubles tournament at the 1980 Australian Open was held from 26 December 1980 through 4 January 1981 on the outdoor grass courts at the Kooyong Stadium in Melbourne, Australia.",
+        "sentence_id": 0
+      },
+      {
+        "title": "1986 Bavarian Tennis Championships – Doubles",
+        "sentence": "Mark Edmondson and Kim Warwick were the defending champions, but Warwick did not participate this year.",
+        "sentence_id": 0
+      },
+      {
+        "title": "1980 Stella Artois Championships – Singles",
+        "sentence": "John McEnroe was the defending champion and won the singles title at the 1980 Queen's Club Championships tennis tournament defeating Kim Warwick in the final 6–3, 6–1.",
+        "sentence_id": 0
+      }
+    ],
+    "query": "Kim Warwick vs Matt Lucena comparison",
+    "simple_query": "Kim Warwick and Matt Lucena both play what sport",
+    "num_supporting_facts": 2,
+    "total_context_docs": 10
+  },
+  {
+    "id": "5ac068d25542996f0d89cba2",
+    "question": "Gülhane Park and Zografeion Lyceum, are located in which country?",
+    "answer": "Turkey",
+    "type": "comparison",
+    "level": "easy",
+    "relevant_contexts": [
+      {
+        "title": "Gülhane Park",
+        "sentence": "Gülhane Park (Turkish: \"Gülhane Parkı\" , \"Rosehouse Park\"; from Persian: \"Gulkhāna\", \"house of flowers\") is a historical urban park in the Eminönü district of Istanbul, Turkey; it is located adjacent to and on the grounds of the Topkapı Palace.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Zografeion Lyceum",
+        "sentence": "Zografeion Lyceum (Turkish: \"Özel Zoğrafyon Rum Lisesi\" , Greek: Ζωγράφειον Λύκειον ) is one of the remaining open Greek schools in Istanbul.",
+        "sentence_id": 0
+      }
+    ],
+    "irrelevant_contexts": [
+      {
+        "title": "Column of the Goths",
+        "sentence": "The Column of the Goths (Turkish: \"Gotlar Sütunu\" ) is Roman victory column dating to the third or fourth century A.D.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Tiled Kiosk",
+        "sentence": "The Tiled Kiosk (Turkish: \"Çinili Köşk\" ) is a pavilion set within the outer walls of Topkapı Palace and dates from 1472 as shown on the tile inscript above the main entrance.",
+        "sentence_id": 0
+      },
+      {
+        "title": "İstanbul Sirkeci Terminal",
+        "sentence": "Istanbul Sirkeci Terminal, also known as Istanbul Terminal (Turkish: \"Sirkeci Garı\" ), is a railway terminal in Istanbul.",
+        "sentence_id": 0
+      }
+    ],
+    "query": "Gülhane Park vs Zografeion Lyceum comparison",
+    "simple_query": "Gülhane Park and Zografeion Lyceum, are located in...",
+    "num_supporting_facts": 2,
+    "total_context_docs": 10
+  },
+  {
+    "id": "5ae3b4d05542992f92d82349",
+    "question": "Who is the director of the 2003 film which has scenes in it filmed at the Quality Cafe in Los Angeles?",
+    "answer": "Todd Phillips",
+    "type": "bridge",
+    "level": "hard",
+    "relevant_contexts": [
+      {
+        "title": "Quality Cafe (diner)",
+        "sentence": "The Quality Cafe (also known as Quality Diner) is a now-defunct diner at 1236 West 7th Street in Los Angeles, California.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Quality Cafe (diner)",
+        "sentence": " The restaurant ceased to function as a diner in late 2006 but has appeared as a location featured in a number of Hollywood films, including \"Training Day\", \"Old School\", \"Se7en\", \"Ghost World\", \"Gone in 60 Seconds\", \"The Stepfather\", \"What's Love Got to Do with It\", \"Sex and Death 101\", and \"Catch Me If You Can.\"",
+        "sentence_id": 1
+      },
+      {
+        "title": "Old School (film)",
+        "sentence": "Old School is a 2003 American comedy film released by DreamWorks Pictures and The Montecito Picture Company and directed by Todd Phillips.",
+        "sentence_id": 0
+      }
+    ],
+    "irrelevant_contexts": [
+      {
+        "title": "Stephen Nicholas (actor)",
+        "sentence": "Stephen Nicholas (born 23 August 1978) also known as Stephen Charles Nicholas is an actor and presenter from Doncaster, South Yorkshire, England.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Good Life Cafe",
+        "sentence": "The Good Life Cafe was a health food market and cafe in Los Angeles, California, known for its open mic nights that helped the 1990s Los Angeles alternative hip hop movement flourish.",
+        "sentence_id": 0
+      },
+      {
+        "title": "John Miner",
+        "sentence": "Composer John Miner may be best known for his rock opera Heavens Cafe, which was staged at the Flamingo Theater in Las Vegas 1996, the Charleston Performing Arts Center in 1997, and later at Insurgo Theater in Los Angeles in 2004.",
+        "sentence_id": 0
+      }
+    ],
+    "query": "who is Quality Cafe biography",
+    "simple_query": "Who is the director of the 2003 film...",
+    "num_supporting_facts": 3,
+    "total_context_docs": 10
+  },
+  {
+    "id": "5ae78e11554299540e5a55ff",
+    "question": "Moment by Moment was from the movie that starred which actress, comedian, and producer?",
+    "answer": "Mary Jean \"Lily\" Tomlin",
+    "type": "bridge",
+    "level": "medium",
+    "relevant_contexts": [
+      {
+        "title": "Moment by Moment (song)",
+        "sentence": "\"Moment by Moment\" is the title theme song to the 1978 Universal Pictures film \"Moment by Moment\" starring Lily Tomlin and John Travolta.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Lily Tomlin",
+        "sentence": "Mary Jean \"Lily\" Tomlin (born September 1, 1939) is an American actress, comedian, writer, singer, and producer.",
+        "sentence_id": 0
+      }
+    ],
+    "irrelevant_contexts": [
+      {
+        "title": "Debra Feuer",
+        "sentence": "Debra Lee Feuer is an American former actress.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Kim Ji-young (actress born 1974)",
+        "sentence": "Kim Ji-young (born September 7, 1974) is a South Korean actress.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Sa Sandaling Kailangan Mo Ako",
+        "sentence": "Sa Sandaling Kailangan Mo Ako (lit.",
+        "sentence_id": 0
+      }
+    ],
+    "query": "Moment by Moment Lily Tomlin comparison details",
+    "simple_query": "Moment by Moment was from the movie that...",
+    "num_supporting_facts": 2,
+    "total_context_docs": 10
+  },
+  {
+    "id": "5a7a0d665542990783324e14",
+    "question": "Who was born first, Joe Manganiello or Kirk Kerkorian?",
+    "answer": "Kerkor \"Kirk\" Kerkorian",
+    "type": "comparison",
+    "level": "medium",
+    "relevant_contexts": [
+      {
+        "title": "Joe Manganiello",
+        "sentence": "Joseph Michael Manganiello ( ; ] ; born December 28, 1976) is an American actor.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Kirk Kerkorian",
+        "sentence": "Kerkor \"Kirk\" Kerkorian (June 6, 1917 – June 15, 2015) was an Armenian-American businessman, investor, and philanthropist.",
+        "sentence_id": 0
+      }
+    ],
+    "irrelevant_contexts": [
+      {
+        "title": "Smurfs: The Lost Village",
+        "sentence": "Smurfs: The Lost Village is a 2017 American 3D computer-animated comedy-adventure film produced by Sony Pictures Animation and The Kerner Entertainment Company, with animation by Sony Pictures Imageworks, for Columbia Pictures.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Paul Steelman",
+        "sentence": "Paul Curtis Steelman, a native of Atlantic City, is an American architect that is recognized as a visionary designer of global entertainment, hospitality, and gaming architecture based in Las Vegas, Nevada and Macau.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Fade Out: The Calamitous Final Days of MGM",
+        "sentence": "Fade Out: The Calamitous Final Days of MGM is a 1990 non-fiction book by Peter Bart which covers the history of MGM since 1969, when it was bought by Kirk Kerkorian.",
+        "sentence_id": 0
+      }
+    ],
+    "query": "Joe Manganiello vs Kirk Kerkorian comparison",
+    "simple_query": "Who was born first, Joe Manganiello or Kirk...",
+    "num_supporting_facts": 2,
+    "total_context_docs": 10
+  },
+  {
+    "id": "5a90bd6555429933b8a205cf",
+    "question": "What is the nationality of the singer-songwriter who wrote the poetry collection Early Work ?",
+    "answer": "American",
+    "type": "bridge",
+    "level": "medium",
+    "relevant_contexts": [
+      {
+        "title": "Early Work",
+        "sentence": "Early Work is a poetry collection by Patti Smith, published in 1994.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Patti Smith",
+        "sentence": "Patricia Lee Smith (born December 30, 1946) is an American singer-songwriter, poet, and visual artist who became an influential component of the New York City punk rock movement with her 1975 debut album \"Horses\".",
+        "sentence_id": 0
+      }
+    ],
+    "irrelevant_contexts": [
+      {
+        "title": "Bhau Panchbhai",
+        "sentence": "Bhau Panchabhai(1 March 1944 - 21Jan 2016 @ 5.30am) is a Marathi poet, writer, and Dalit activist.",
+        "sentence_id": 0
+      },
+      {
+        "title": "The Poetry Collection",
+        "sentence": "A University at Buffalo Libraries Special Collection, The Poetry Collection at the University at Buffalo, The State University of New York, is devoted to 20th century poetry in English and English translation.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Sandy Shreve",
+        "sentence": "Sandy Shreve is a Canadian poet, editor and visual artist living on Pender Island, British Columbia.",
+        "sentence_id": 0
+      }
+    ],
+    "query": "who is Early Work biography",
+    "simple_query": "What is the nationality of the singer-songwriter who...",
+    "num_supporting_facts": 2,
+    "total_context_docs": 10
+  },
+  {
+    "id": "5a8fae775542992414482b3b",
+    "question": "What all female high school is located in a town in Sunyani West District  in the Brong-Ahafo Region of Ghana?",
+    "answer": "Notre Dame High School",
+    "type": "bridge",
+    "level": "medium",
+    "relevant_contexts": [
+      {
+        "title": "Notre Dame High School (Ghana)",
+        "sentence": "Notre Dame High School is an all female second cycle institution in Fiapre in the Brong-Ahafo Region of Ghana.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Fiapre",
+        "sentence": "Fiapre is a town in Sunyani West District in the Brong-Ahafo Region of Ghana.",
+        "sentence_id": 0
+      }
+    ],
+    "irrelevant_contexts": [
+      {
+        "title": "Duayaw Nkwanta",
+        "sentence": "Duayaw Nkwanta is a town and the capital of Tano North District, a district in the Brong-Ahafo Region of Ghana, located close to the capital of Brong-Ahafo, Sunyani.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Sunyani",
+        "sentence": "Sunyani is a city and the capital town of the Brong-Ahafo Region and the Sunyani Municipal of Ghana.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Kwadjokrom",
+        "sentence": "Kwadjokrom is a small town and is the capital of Sene District in the Brong-Ahafo Region of Eastern Region in south Ghana.",
+        "sentence_id": 0
+      }
+    ],
+    "query": "what is Notre Dame High School definition",
+    "simple_query": "What all female high school is located in...",
+    "num_supporting_facts": 2,
+    "total_context_docs": 10
+  },
+  {
+    "id": "5ab72adb5542993667793f5d",
+    "question": "he Central Harbourfront is a waterfront site it is the result of Central and Wan Chai Reclamation, and it sits to the east of the International Finance Centre (IFC), a skyscraper and an integrated commercial development on the waterfront of the Central District, of which territory?",
+    "answer": "Hong Kong",
+    "type": "bridge",
+    "level": "easy",
+    "relevant_contexts": [
+      {
+        "title": "Central Harbourfront",
+        "sentence": "The Central Harbourfront is a waterfront site in Central, Hong Kong.",
+        "sentence_id": 0
+      },
+      {
+        "title": "International Finance Centre (Hong Kong)",
+        "sentence": " IFC, branded as \"ifc\") is a skyscraper and an integrated commercial development on the waterfront of Hong Kong's Central District.",
+        "sentence_id": 1
+      }
+    ],
+    "irrelevant_contexts": [
+      {
+        "title": "Central Plaza (Hong Kong)",
+        "sentence": "Central Plaza is a 78-storey, 374 m skyscraper completed in August 1992 at 18 Harbour Road, in Wan Chai on Hong Kong Island in Hong Kong.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Wan Chai",
+        "sentence": "Wan Chai ( ) is a metropolitan area situated at the western part of the Wan Chai District on the northern shore of Hong Kong Island, in Hong Kong.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Wan Chai District Council",
+        "sentence": "Wan Chai District Council () is the district council for the Wan Chai District in Hong Kong.",
+        "sentence_id": 0
+      }
+    ],
+    "query": "Central Harbourfront International Finance Centre comparison details",
+    "simple_query": "he Central Harbourfront is a waterfront site it...",
+    "num_supporting_facts": 2,
+    "total_context_docs": 10
+  },
+  {
+    "id": "5aba5a4d5542994dbf0198ed",
+    "question": "Both Corydalis and Cedrus are what level of classification in the naming system?",
+    "answer": "genus",
+    "type": "comparison",
+    "level": "hard",
+    "relevant_contexts": [
+      {
+        "title": "Corydalis",
+        "sentence": "Corydalis (Greek \"korydalís\" \"crested lark\") is a genus of about 470 species of annual and perennial herbaceous plants in the Papaveraceae family, native to the temperate Northern Hemisphere and the high mountains of tropical eastern Africa.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Cedrus",
+        "sentence": "Cedrus (common English name cedar) is a genus of coniferous trees in the plant family Pinaceae.",
+        "sentence_id": 0
+      }
+    ],
+    "irrelevant_contexts": [
+      {
+        "title": "Type 3 120 mm 45 caliber naval gun",
+        "sentence": "Type 3 120 mm 45 caliber naval gun was a Japanese naval gun and coast defense gun used on destroyers, submarines and torpedo boats of the Imperial Japanese Navy during World War I and World War II.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Amphirhina",
+        "sentence": "Amphirhina are animals, a phylogenetic classification within the subphylum vertebrata.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Autonomous prefectures of China",
+        "sentence": "Autonomous prefectures () are one type of autonomous administrative divisions of China, existing at the prefectural level, with either ethnic minorities forming over 50% of the population or being the historic home of significant minorities.",
+        "sentence_id": 0
+      }
+    ],
+    "query": "Corydalis vs Cedrus comparison",
+    "simple_query": "Both Corydalis and Cedrus are what level of...",
+    "num_supporting_facts": 2,
+    "total_context_docs": 10
+  },
+  {
+    "id": "5abeed7e5542993fe9a41da0",
+    "question": "What is the birth date of the coach of the 2014-15 Michigan Wolverines men's basketball team?",
+    "answer": "February 5, 1953",
+    "type": "bridge",
+    "level": "medium",
+    "relevant_contexts": [
+      {
+        "title": "2014–15 Michigan Wolverines men's basketball team",
+        "sentence": " The team was led by 8th year head coach John Beilein, who was voted 2014 Big Ten Coach of the Year by the Big Ten media.",
+        "sentence_id": 3
+      },
+      {
+        "title": "John Beilein",
+        "sentence": "John Patrick Beilein (pronounced \"bee-line\"; born February 5, 1953) is an American college basketball coach and current men's basketball head coach at the University of Michigan.",
+        "sentence_id": 0
+      }
+    ],
+    "irrelevant_contexts": [
+      {
+        "title": "Michigan–Michigan State men's basketball rivalry",
+        "sentence": "The Michigan–Michigan State basketball rivalry is a college basketball rivalry between Michigan Wolverines men's basketball and Michigan State Spartans men's basketball that is part of the larger intrastate rivalry between the University of Michigan and Michigan State University that exists across a broad spectrum of endeavors including their general athletic programs: Michigan Wolverines and Michigan State Spartans.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Pete Tillotson",
+        "sentence": "Peter S. Tillotson (born March 23, 1936) is an American former basketball player.",
+        "sentence_id": 0
+      },
+      {
+        "title": "Estel Tessmer",
+        "sentence": "Estel S. \"Zit\" Tessmer (February 25, 1910 – June 1972) was an American football and basketball player.",
+        "sentence_id": 0
+      }
+    ],
+    "query": "when was 2014 founded started established",
+    "simple_query": "What is the birth date of the coach...",
+    "num_supporting_facts": 2,
+    "total_context_docs": 10
+  }
+]
