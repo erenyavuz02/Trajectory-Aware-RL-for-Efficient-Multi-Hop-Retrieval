@@ -192,3 +192,16 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+
+#ignore .pkl files
+*.pkl
+
+#ignore this folder epoch_1_model
+epoch_1_model/
+
+#ignore DS_Store files
+.DS_Store
+
+#ignore gitignore files
+.gitignore
