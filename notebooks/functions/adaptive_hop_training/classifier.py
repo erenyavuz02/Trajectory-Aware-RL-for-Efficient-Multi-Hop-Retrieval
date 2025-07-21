@@ -18,8 +18,6 @@ class Classifier:
         self.classifier_model = classifier_model
         self.classifier_tokenizer = classifier_tokenizer
         self.device = device
-        # Training Configuration
-        
 
     def is_context_relevant(self, question: str, context: str) -> str:
         """
@@ -39,10 +37,19 @@ class Classifier:
         pred = torch.argmax(logits, dim=1).item()
         return "yes" if pred == 1 else "no"
 
-    def train(self, training_config, train_data, val_data):
+    def train(self, training_config, train_data=None, val_data=None, preference_dataset=None):
+        """
+        Train the classifier using either HotpotQA data or preference dataset
         
+        Args:
+            training_config: Training configuration dictionary
+            train_data: HotpotQA training data (optional)
+            val_data: HotpotQA validation data (optional)
+            preference_dataset: Preference dataset from adaptive hop training (optional)
+        """
         self.CLASSIFIER_TRAINING_CONFIG = training_config
-        # Test before training
+        
+        # Test before training
         print("Testing classifier with example question and context:")
         test_question = "Which magazine was started first Arthur's Magazine or First for Women?"
         test_context = "Arthur's Magazine (1844–1846) was an American literary periodical published in Philadelphia in the 19th century."
@@ -55,63 +62,173 @@ class Classifier:
 
         # Train the classifier
         print("\nStarting classifier training...")
-        best_accuracy = self.train_relevance_classifier(
-            train_data=train_data,
-            val_data=val_data
-        )
+        
+        if preference_dataset is not None:
+            print("Using preference dataset for training...")
+            best_accuracy = self.train_from_preference_dataset(preference_dataset)
+        elif train_data is not None and val_data is not None:
+            print("Using HotpotQA dataset for training...")
+            best_accuracy = self.train_relevance_classifier(
+                train_data=train_data,
+                val_data=val_data
+            )
+        else:
+            raise ValueError("Either provide (train_data, val_data) or preference_dataset")
     
         print(f"\nTraining completed!")
         print(f"Best validation accuracy: {best_accuracy:.4f}")
         
-        # Test the trained classifier with examples from validation dataset
-        print("Testing classifier with examples from validation dataset:")
-        print("=" * 60)
+        # Test the trained classifier
+        self._test_trained_classifier(test_question, test_context)
 
-        # Get some examples from validation dataset
-        for i in range(5):  # Show 5 examples
-            question = val_data['question'][i]
-            context_data = val_data['context'][i]
-            supporting_facts = val_data['supporting_facts'][i]
+    def train_from_preference_dataset(self, preference_dataset):
+        """Train classifier using preference dataset"""
+        
+        print("Converting preference dataset to relevance training data...")
+        
+        # Convert preference dataset to training format
+        train_questions, train_contexts, train_labels = self._convert_preference_to_relevance_data(preference_dataset)
+        
+        # Split into train/val (80/20)
+        split_idx = int(0.8 * len(train_questions))
+        
+        train_data = {
+            'questions': train_questions[:split_idx],
+            'contexts': train_contexts[:split_idx],
+            'labels': train_labels[:split_idx]
+        }
+        
+        val_data = {
+            'questions': train_questions[split_idx:],
+            'contexts': train_contexts[split_idx:],
+            'labels': train_labels[split_idx:]
+        }
+        
+        print(f"Created {len(train_data['questions'])} training examples and {len(val_data['questions'])} validation examples")
+        
+        # Create datasets
+        train_dataset = PreferenceRelevanceDataset(
+            train_data, self.classifier_tokenizer, self.CLASSIFIER_TRAINING_CONFIG['max_length']
+        )
+        
+        val_dataset = PreferenceRelevanceDataset(
+            val_data, self.classifier_tokenizer, self.CLASSIFIER_TRAINING_CONFIG['max_length']
+        )
+        
+        train_loader = DataLoader(
+            train_dataset, 
+            batch_size=self.CLASSIFIER_TRAINING_CONFIG['batch_size'], 
+            shuffle=True
+        )
+        
+        val_loader = DataLoader(
+            val_dataset, 
+            batch_size=self.CLASSIFIER_TRAINING_CONFIG['batch_size'], 
+            shuffle=False
+        )
+        
+        # Setup optimizer and scheduler
+        optimizer = AdamW(
+            self.classifier_model.parameters(),
+            lr=self.CLASSIFIER_TRAINING_CONFIG['learning_rate'],
+            weight_decay=self.CLASSIFIER_TRAINING_CONFIG['weight_decay']
+        )
 
-            print(f"\nExample {i+1}:")
-            print(f"Question: {question}")
-            print(f"Answer: {val_data['answer'][i]}")
-            
-            # Get supporting fact pairs for this question
-            supporting_pairs = set(zip(supporting_facts['title'], supporting_facts['sent_id']))
-            
-            # Test with one relevant and one irrelevant context
-            context_titles = context_data['title']
-            context_sentences = context_data['sentences']
-            
-            # Find a supporting sentence
-            relevant_context = None
-            irrelevant_context = None
-            
-            for title_idx, (title, sentences) in enumerate(zip(context_titles, context_sentences)):
-                for sent_idx, sentence in enumerate(sentences):
-                    is_supporting = (title, sent_idx) in supporting_pairs
-                    if is_supporting and relevant_context is None:
-                        relevant_context = sentence
-                    elif not is_supporting and irrelevant_context is None:
-                        irrelevant_context = sentence
-            
-            # Test both contexts
-            if relevant_context:
-                result = self.is_context_relevant(question, relevant_context)
-                print(f"Relevant context: {relevant_context[:100]}...")
-                print(f"Classifier prediction: {result}")
-            
-            if irrelevant_context:
-                result = self.is_context_relevant(question, irrelevant_context)
-                print(f"Irrelevant context: {irrelevant_context[:100]}...")
-                print(f"Classifier prediction: {result}")
-            
-            print("-" * 40)
+        total_steps = len(train_loader) * self.CLASSIFIER_TRAINING_CONFIG['num_epochs']
+        scheduler = get_linear_schedule_with_warmup(
+            optimizer,
+            num_warmup_steps=self.CLASSIFIER_TRAINING_CONFIG['warmup_steps'],
+            num_training_steps=total_steps
+        )
+        
+        # Validate model before training
+        print("Validating model before training...")
+        val_acc = self.evaluate_classifier(val_loader)
+        print(f"Initial validation accuracy: {val_acc:.4f}")
+        
+        # Training loop
+        self.classifier_model.train()
+        best_val_acc = 0.0
 
-        # Original test example
-        test_question = "Which magazine was started first Arthur's Magazine or First for Women?"
-        test_context = "Arthur's Magazine (1844–1846) was an American literary periodical published in Philadelphia in the 19th century."
+        for epoch in range(self.CLASSIFIER_TRAINING_CONFIG['num_epochs']):
+            print(f"\nEpoch {epoch + 1}/{self.CLASSIFIER_TRAINING_CONFIG['num_epochs']}")
+
+            total_loss = 0
+            for batch in tqdm(train_loader, desc="Training"):
+                optimizer.zero_grad()
+                
+                input_ids = batch['input_ids'].to(self.device)
+                attention_mask = batch['attention_mask'].to(self.device)
+                labels = batch['labels'].to(self.device)
+
+                outputs = self.classifier_model(
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    labels=labels
+                )
+                
+                loss = outputs.loss
+                loss.backward()
+
+                torch.nn.utils.clip_grad_norm_(self.classifier_model.parameters(), 1.0)
+                optimizer.step()
+                scheduler.step()
+                
+                total_loss += loss.item()
+            
+            avg_loss = total_loss / len(train_loader)
+            print(f"Average training loss: {avg_loss:.4f}")
+            
+            # Validation
+            val_acc = self.evaluate_classifier(val_loader)
+            print(f"Validation accuracy: {val_acc:.4f}")
+            
+            if val_acc > best_val_acc:
+                best_val_acc = val_acc
+                if self.CLASSIFIER_TRAINING_CONFIG['save_model']:
+                    model_save_path = f"relevance_classifier_preference_best_{CURRENT_TIMESTAMP}.pt"
+                    torch.save(self.classifier_model.state_dict(), model_save_path)
+                    print(f"Best model saved: {model_save_path}")
+        
+        return best_val_acc
+
+    def _convert_preference_to_relevance_data(self, preference_dataset):
+        """Convert preference dataset to relevance training format"""
+        import random
+        
+        questions = []
+        contexts = []
+        labels = []
+        
+        print(f"Processing {len(preference_dataset)} questions from preference dataset...")
+        
+        for question, data in tqdm(preference_dataset.items(), desc="Converting preference data"):
+            for hop_key, hop_data in data["hops"].items():
+                # Extract information
+                question_text = hop_data["question"]
+                retrieved_context = hop_data["retrieved_context"]
+                ground_truth_relevance = hop_data["relevance"]  # True/False from ground truth
+                
+                # Add the example
+                questions.append(question_text)
+                contexts.append(retrieved_context)
+                labels.append(1 if ground_truth_relevance else 0)
+        
+        print(f"Converted to {len(questions)} training examples")
+        print(f"Positive examples (relevant): {sum(labels)}")
+        print(f"Negative examples (irrelevant): {len(labels) - sum(labels)}")
+        
+        # Shuffle the data
+        combined = list(zip(questions, contexts, labels))
+        random.shuffle(combined)
+        questions, contexts, labels = zip(*combined)
+        
+        return list(questions), list(contexts), list(labels)
+
+    def _test_trained_classifier(self, test_question, test_context):
+        """Test the trained classifier with examples"""
+        print("\n" + "=" * 60)
+        print("Testing trained classifier:")
         
         result = self.is_context_relevant(test_question, test_context)
         print(f"\nTest example:")
@@ -120,8 +237,7 @@ class Classifier:
         print(f"Prediction: {result}")
 
     def train_relevance_classifier(self, train_data, val_data):
-        """Train the relevance classifier"""
-
+        """Train the relevance classifier using HotpotQA data"""
         print("Preparing datasets...")
         train_dataset = RelevanceDataset(data = train_data,
             tokenizer = self.classifier_tokenizer,
@@ -133,7 +249,7 @@ class Classifier:
             data = val_data,
             tokenizer = self.classifier_tokenizer,
             max_length = self.CLASSIFIER_TRAINING_CONFIG['max_length'],
-            num_samples=self.CLASSIFIER_TRAINING_CONFIG['num_samples']  // 10 
+            num_samples=self.CLASSIFIER_TRAINING_CONFIG['num_samples'] // 10 
         )
 
         train_loader = train_dataset.get_data_loader(
@@ -164,7 +280,6 @@ class Classifier:
         print("Validating model before training...")
         val_acc = self.evaluate_classifier(val_loader)
         print(f"Initial validation accuracy: {val_acc:.4f}")
-        
         
         # Training loop
         self.classifier_model.train()
@@ -237,6 +352,42 @@ class Classifier:
         accuracy = accuracy_score(true_labels, predictions)
         
         return accuracy
+
+
+class PreferenceRelevanceDataset(Dataset):
+    """Dataset for training relevance classifier from preference data"""
+    
+    def __init__(self, data, tokenizer, max_length=512):
+        self.questions = data['questions']
+        self.contexts = data['contexts']
+        self.labels = data['labels']
+        self.tokenizer = tokenizer
+        self.max_length = max_length
+    
+    def __len__(self):
+        return len(self.questions)
+    
+    def __getitem__(self, idx):
+        question = self.questions[idx]
+        context = self.contexts[idx]
+        label = self.labels[idx]
+        
+        # Format input as "question: [QUESTION] context: [CONTEXT]"
+        text = f"question: {question} context: {context}"
+        
+        encoding = self.tokenizer(
+            text,
+            truncation=True,
+            padding='max_length',
+            max_length=self.max_length,
+            return_tensors='pt'
+        )
+        
+        return {
+            'input_ids': encoding['input_ids'].flatten(),
+            'attention_mask': encoding['attention_mask'].flatten(),
+            'labels': torch.tensor(label, dtype=torch.long)
+        }
 
 
 class RelevanceDataset(Dataset):

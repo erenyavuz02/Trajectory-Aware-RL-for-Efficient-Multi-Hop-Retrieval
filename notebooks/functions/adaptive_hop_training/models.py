@@ -31,7 +31,7 @@ class QueryGenerator:
         
         return query_tokenizer, query_generator
 
-    def generate_query(self, question, gen_config, context="", use_fewshot=True):
+    def generate_query(self, question, gen_config, context="", use_fewshot=True, fewshot_examples=None):
         """Generate a search query using T5-Flan
         
         Args:
@@ -53,15 +53,15 @@ class QueryGenerator:
             prompt = "\n\n".join(fewshot_examples) + "\n\n" + prompt
 
         # Tokenize and generate
-        inputs = query_tokenizer(
+        inputs = self.query_tokenizer(
             prompt,
             return_tensors="pt",
             max_length=gen_config['max_input_length'],
             truncation=True
-        ).to(device)
-        
+        ).to(self.device)
+
         with torch.no_grad():
-            outputs = query_generator.generate(
+            outputs = self.query_generator.generate(
                 **inputs,
                 max_new_tokens=gen_config['max_new_tokens'],
                 do_sample=gen_config['do_sample'],
@@ -69,8 +69,8 @@ class QueryGenerator:
                 top_p=gen_config['top_p'],
                 num_return_sequences=1
             )
-        
-        query = query_tokenizer.decode(outputs[0], skip_special_tokens=True).strip()
+
+        query = self.query_tokenizer.decode(outputs[0], skip_special_tokens=True).strip()
         return query
     
     
