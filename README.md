@@ -42,3 +42,43 @@ This project implements a trajectory-aware reinforcement learning approach for e
 **Supporting Files:**
 
 - `fewshot_examples/` - Additional few-shot examples for different components of the system including general and HotpotQA-specific examples
+
+
+## How to Run files
+
+### Preference Dataset Generation
+preference_dataset_generation.ipynb
+
+- Install the dependencies in the first cell of the notebook in the colab
+- For different models for query generation, you can change the model name in the second cell of the notebook
+- In the third cell, you can download the hotpotqa dataset from HuggingFace or use the one in the repository by uploading it to the colab.
+
+  change the dataset path to get the splitted dataset from the repository by defining the directory of the dataset in the notebook
+  ```python
+  train_filename = "hotpot_train_5000samples_2025-06-11_18-31-48.jsonl"
+  val_filename = "hotpot_val_1000samples_2025-06-11_18-31-48.jsonl"
+  ```
+- Run the finetuning cell if not wanted to use the default dataset.
+
+### Training IPO Model
+train_ipo_clean.ipynb
+
+- Install the dependencies in the first cell of the notebook in the colab
+- This notebook creates a torch Dataset class using the preference dataset created in the previous step. This used the non formatted preference dataset created in the folder
+  `new_datasets/preference_datasets/`
+- The training is done using the T5-Flan model with the preference dataset.
+- before training the model change the name of the saved folder for better convention
+  ```python
+  model_name = "epoch_x_{model_configuration}"
+  ```
+  where `x` is the epoch number and `model_configuration` is the configuration of the model used for training.
+
+### Evaluating Models
+evaluate_models.ipynb
+
+- Install the dependencies in the first cell of the notebook in the colab
+- This notebook evaluates the trained models using the HotpotQA dataset and the ColBERT embeddings
+- The evaluation is done using the few-shot examples created in the previous step.
+- The few-shot examples are loaded from the `fewshot_examples.json` file in the `datasets/` folder.
+- The evaluation is done using the T5-Flan model with the preference dataset.
+- The evaluation results are saved in the `evaluation_results/` folder.
