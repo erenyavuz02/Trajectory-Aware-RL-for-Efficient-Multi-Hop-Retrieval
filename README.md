@@ -26,8 +26,8 @@ This project implements a trajectory-aware reinforcement learning approach for e
 
 
 - ~~`notebooks/hotpotqa_fewshot_generation.ipynb` - Few-shot example generation using HotpotQA dataset for adaptive hop (DEPRECIATED)~~
-- ~~`notebooks/adaptive_hop_training.ipynb` - Implementation of adaptive hop classification training (CANCELLED) ~~
-- ~~`notebooks/functions/adaptive_hop_training/` - Modular functions for adaptive hop training including classifier, dataset handling, and model implementations ~~
+- ~~`notebooks/adaptive_hop_training.ipynb` - Implementation of adaptive hop classification training (CANCELLED)~~
+- ~~`notebooks/functions/adaptive_hop_training/` - Modular functions for adaptive hop training including classifier, dataset handling, and model implementations~~
 
 **Supporting Files:**
 
