@@ -1,4 +1,5 @@
 # Trajectory-Aware-RL-for-Efficient-Multi-Hop-Retrieval
+Koç University, COMP438 — Reinforcement Learning Final Project, Spring 2025
 
 ## Project Overview
 
